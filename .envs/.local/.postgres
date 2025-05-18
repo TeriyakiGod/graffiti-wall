@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=graffiti_wall
+POSTGRES_USER=zvHtbdKOxDlmJzwTCgBujErwnmficAxz
+POSTGRES_PASSWORD=fIhWj9w1QX9mLjWkduZZZL8yLZaGLJOuqKLoeqAz6YPICFOPsMm1D7rYWlJ3knGB
