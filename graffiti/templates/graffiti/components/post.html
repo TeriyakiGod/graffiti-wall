@@ -12,9 +12,12 @@
           <span class="text-muted">{{ graffiti.created_at | date:"d/m/Y H:i" }}</span>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <button type="button" class="btn btn-outline-primary">
-            <span>{{ graffiti.likes_count }}</span>
-            <i class="bi bi-egg"></i>
+          <button type="button"
+                  class="btn btn-outline-primary like-btn {% if user in graffiti.likes.all %}btn-primary text-white{% endif %}"
+                  onclick="likeGraffiti({{ graffiti.id }})"
+                  id="like-btn-{{ graffiti.id }}">
+            <span id="likes-count-{{ graffiti.id }}">{{ graffiti.likes_count }}</span>
+            <i class="bi bi-egg-fill"></i>
           </button>
           <button type="button"
                   class="btn btn-outline-secondary"
@@ -40,5 +43,40 @@
     }, function(err) {
       console.error('Could not copy text: ', err);
     });
+  }
+
+  function likeGraffiti(graffitiId) {
+    const likeButton = document.getElementById(`like-btn-${graffitiId}`);
+    const likeCountSpan = document.getElementById(`likes-count-${graffitiId}`);
+
+    fetch("{% url 'graffiti:like' 0 %}".replace("0", graffitiId), {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Update the like count
+        likeCountSpan.textContent = data.likes_count;
+
+        // Toggle button color based on 'liked' status
+        if (data.liked) {
+          likeButton.classList.remove("btn-outline-primary");
+          likeButton.classList.add("btn-primary", "text-white");
+        } else {
+          likeButton.classList.remove("btn-primary", "text-white");
+          likeButton.classList.add("btn-outline-primary");
+        }
+      })
+      .catch(error => {
+        console.error("Error liking graffiti:", error);
+      });
   }
 </script>
