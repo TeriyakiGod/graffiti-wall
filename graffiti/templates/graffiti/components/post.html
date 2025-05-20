@@ -16,7 +16,9 @@
             <span>{{ graffiti.likes_count }}</span>
             <i class="bi bi-egg"></i>
           </button>
-          <button type="button" class="btn btn-outline-secondary">
+          <button type="button"
+                  class="btn btn-outline-secondary"
+                  onclick="copyToClipboard()">
             <i class="bi bi-share"></i>
           </button>
         </div>
@@ -29,3 +31,14 @@
     {% endcomment %}
   </ul>
 </div>
+<script>
+  function copyToClipboard() {
+    // Copy share link to clipboard
+    const shareLink = "{{ request.META.HTTP_HOST }}/graffiti/{{ graffiti.id }}";
+    navigator.clipboard.writeText(shareLink).then(function() {
+      alert('Share link copied to clipboard!');
+    }, function(err) {
+      console.error('Could not copy text: ', err);
+    });
+  }
+</script>

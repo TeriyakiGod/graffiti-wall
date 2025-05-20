@@ -40,5 +40,5 @@ def graffiti_delete(request, pk):
 
 
 def graffiti_list(request):
-    graffitis = Graffiti.objects.all()
+    graffitis = Graffiti.objects.all().order_by("-created_at")
     return render(request, "graffiti/list.html", {"graffitis": graffitis})
