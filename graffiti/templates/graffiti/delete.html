@@ -4,7 +4,7 @@
   <div class="container text-center">
     <h2>Delete Graffiti</h2>
     <p>Are you sure you want to delete this graffiti?</p>
-    <div>{{ graffiti.svg_data|safe }}</div>
+    {% include 'graffiti/components/post.html' %}
     <form method="post">
       {% csrf_token %}
       <a href="{% url 'graffiti:detail' graffiti.pk %}">
