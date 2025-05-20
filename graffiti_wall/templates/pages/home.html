@@ -1,35 +1,5 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="container d-flex flex-column align-items-center">
-    <div id="feed"
-         class="infinite-scroll d-flex flex-column align-items-center w-100"></div>
-    {% include "components/post.html" %}
-    {% include "components/post.html" %}
-    {% include "components/post.html" %}
-    {% include "components/post.html" %}
-    {% include "components/post.html" %}
-    <div id="loader" class="text-center my-4">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      let loading = false;
-      window.addEventListener('scroll', function() {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200 && !loading) {
-          loading = true;
-          document.getElementById('loader').style.display = 'block';
-          // Simulate loading more posts
-          setTimeout(function() {
-            // Here you would fetch and append more posts
-            document.getElementById('loader').style.display = 'none';
-            loading = false;
-          }, 1500);
-        }
-      });
-    });
-  </script>
+  {% include 'graffiti/list.html' %}
 {% endblock content %}

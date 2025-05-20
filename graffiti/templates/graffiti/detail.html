@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if user == graffiti.author %}
+    <div class="toolbar mb-3 text-center w-100">
+      <form method="get" action="{% url 'graffiti:delete' graffiti.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </form>
+    </div>
+  {% endif %}
+  <div class="container d-flex flex-column align-items-center">{% include 'graffiti/components/post.html' %}</div>
+{% endblock content %}

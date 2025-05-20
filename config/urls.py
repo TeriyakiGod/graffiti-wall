@@ -9,8 +9,10 @@ from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
+from graffiti import views as graffiti_views
+
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", graffiti_views.graffiti_list, name="feed"),
     path(
         "about/",
         TemplateView.as_view(template_name="pages/about.html"),
@@ -21,8 +23,8 @@ urlpatterns = [
     # User management
     path("users/", include("graffiti_wall.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
-    # ...
+    # Social
+    path("graffiti/", include("graffiti.urls", namespace="graffiti")),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]

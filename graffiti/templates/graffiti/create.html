@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2>Create Graffiti</h2>
+    <canvas id="canvas"
+            width="640"
+            height="640"
+            class="border border-5 border-primary"></canvas>
+    <br />
+    <form id="graffiti-form" method="post">
+      {% csrf_token %}
+      <input type="hidden" id="id_svg_data" name="svg_data" />
+      <button class="btn btn-secondary" id="clear-btn" type="button">Clear</button>
+      <button class="btn btn-primary" type="submit">Save Graffiti</button>
+    </form>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+  <script>
+    const canvas = new fabric.Canvas('canvas', {
+      isDrawingMode: true, // Enable drawing mode
+      backgroundColor: 'white', // Optional: Set a background color
+    });
+
+    // Set drawing brush properties
+    canvas.freeDrawingBrush.color = 'black';
+    canvas.freeDrawingBrush.width = 2;
+
+    // Clear the canvas
+    document.getElementById('clear-btn').onclick = function() {
+      canvas.clear();
+      canvas.backgroundColor = 'white'; // Reset background color after clearing
+      canvas.renderAll();
+    };
+
+    // Handle form submission
+    document.getElementById('graffiti-form').onsubmit = function(e) {
+      // Export the canvas as SVG
+      const svgData = canvas.toSVG();
+      console.log(svgData); // Debug: Log the SVG data
+      document.getElementById('id_svg_data').value = svgData; // Set the hidden input value
+    };
+  </script>
+{% endblock content %}
