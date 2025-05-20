@@ -3,6 +3,37 @@
 {% block content %}
   <div class="container text-center">
     <h2>Create Graffiti</h2>
+    <div class="toolbar mb-3 row">
+      <div class="col d-flex flex-column align-items-center justify-content-between">
+        <label for="color-picker" class="form-label mb-1">Brush Color:</label>
+        <input type="color"
+               id="color-picker"
+               value="#000000"
+               class="form-control form-control-color" />
+      </div>
+      <div class="col d-flex flex-column align-items-center justify-content-between">
+        <label for="brush-size" class="form-label mb-1">Brush Size:</label>
+        <input type="range"
+               id="brush-size"
+               min="1"
+               max="100"
+               value="2"
+               class="form-range w-auto" />
+      </div>
+      <div class="col d-flex flex-column align-items-center justify-content-between">
+        <label for="bg-color-picker" class="form-label mb-1">Bg Color:</label>
+        <input type="color"
+               id="bg-color-picker"
+               value="#ffffff"
+               class="form-control form-control-color" />
+      </div>
+      <div class="col d-flex flex-column align-items-center justify-content-between">
+        <label for="eraser-btn" class="form-label mb-1">Eraser:</label>
+        <button id="eraser-btn" class="btn btn-outline-danger">
+          <i class="bi bi-eraser"></i>
+        </button>
+      </div>
+    </div>
     <canvas id="canvas"
             width="640"
             height="640"
@@ -18,27 +49,66 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
   <script>
     const canvas = new fabric.Canvas('canvas', {
-      isDrawingMode: true, // Enable drawing mode
-      backgroundColor: 'white', // Optional: Set a background color
+      isDrawingMode: true,
+      backgroundColor: localStorage.getItem('bgColor') || 'white', // Restore background color
     });
 
-    // Set drawing brush properties
-    canvas.freeDrawingBrush.color = 'black';
-    canvas.freeDrawingBrush.width = 2;
+    // Restore brush properties from localStorage
+    canvas.freeDrawingBrush.color = localStorage.getItem('brushColor') || 'black';
+    canvas.freeDrawingBrush.width = parseInt(localStorage.getItem('brushSize'), 10) || 2;
+
+    // Set initial values for inputs
+    document.getElementById('color-picker').value = localStorage.getItem('brushColor') || '#000000';
+    document.getElementById('brush-size').value = localStorage.getItem('brushSize') || 2;
+    document.getElementById('bg-color-picker').value = localStorage.getItem('bgColor') || '#ffffff';
+
+    // Handle brush color change
+    document.getElementById('color-picker').oninput = function() {
+      canvas.freeDrawingBrush.color = this.value;
+      localStorage.setItem('brushColor', this.value); // Save to localStorage
+    };
+
+    // Handle brush size change
+    document.getElementById('brush-size').oninput = function() {
+      canvas.freeDrawingBrush.width = parseInt(this.value, 10);
+      localStorage.setItem('brushSize', this.value); // Save to localStorage
+    };
+
+    // Handle background color change
+    document.getElementById('bg-color-picker').oninput = function() {
+      canvas.backgroundColor = this.value;
+      canvas.renderAll();
+      localStorage.setItem('bgColor', this.value); // Save to localStorage
+    };
+
+    // Toggle eraser mode
+    let isEraserMode = false;
+    document.getElementById('eraser-btn').onclick = function() {
+      isEraserMode = !isEraserMode;
+      if (isEraserMode) {
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.color = canvas.backgroundColor;
+        this.classList.add('active');
+        this.innerHTML = '<i class="bi bi-pencil"></i>'; // Change to pen icon
+      } else {
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.color = document.getElementById('color-picker').value;
+        this.classList.remove('active');
+        this.innerHTML = '<i class="bi bi-eraser"></i>'; // Change to eraser icon
+      }
+    };
 
     // Clear the canvas
     document.getElementById('clear-btn').onclick = function() {
       canvas.clear();
-      canvas.backgroundColor = 'white'; // Reset background color after clearing
+      canvas.backgroundColor = document.getElementById('bg-color-picker').value;
       canvas.renderAll();
     };
 
     // Handle form submission
     document.getElementById('graffiti-form').onsubmit = function(e) {
-      // Export the canvas as SVG
       const svgData = canvas.toSVG();
-      console.log(svgData); // Debug: Log the SVG data
-      document.getElementById('id_svg_data').value = svgData; // Set the hidden input value
+      document.getElementById('id_svg_data').value = svgData;
     };
   </script>
 {% endblock content %}
